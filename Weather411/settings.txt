@@ -1,0 +1,4 @@
+#FreeflightWx Settings
+#Saved at 
+URL=http://freeflightwx.com/test/up.php?
+SID=243
