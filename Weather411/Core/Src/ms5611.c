@@ -19,7 +19,7 @@ long t;
 
 uint8_t bytes[3];
 
-char buffer[100];
+char buffer1[100];
 
 
 
@@ -60,7 +60,7 @@ void sns_ReadCoeffs(void) {
 
     }
 
-    sprintf(buffer, "MS5611 Calibration: %i %i %i %i %i %i %i %i\r\n",
+    sprintf(buffer1, "MS5611 Calibration: %i %i %i %i %i %i %i %i\r\n",
 			gC[0],
 			gC[1],
 			gC[2],
@@ -71,7 +71,7 @@ void sns_ReadCoeffs(void) {
 			gC[7]);
 
 
-	  Uart_SendString(buffer, pc_uart);
+	  Uart_SendString(buffer1, pc_uart);
 }
 
 void sns_Reset(void) {

@@ -7,16 +7,16 @@
 #define LOG_BUFFER_SIZE 4096
 
 SETTINGS settings;
-FRESULT fresult;
+FRESULT fresult1;
 
 
 
 char * settingsFile = "settings.txt";
 
-char buffer[200]; //settings file line buffer
+char buffer2[200]; //settings file line buffer
 
 UART_LineBuffer uart_lineBuffer;
-char line[200];
+char line1[200];
 
 char logdir[10];
 char logfile[30];
@@ -52,15 +52,15 @@ void SDcard_Init(void){
 
 
 	Uart_SendString("Mounting SD Card...\r\n", pc_uart);
-	fresult = Mount_SD("/");
-	if (fresult != FR_OK){
+	fresult1 = Mount_SD("/");
+	if (fresult1 != FR_OK){
 		sdState = SDSTATE_ERR;
 		defaultSettings();
 		return;
 
 	}
-	fresult = Check_SD_Space();
-	if (fresult != FR_OK){
+	fresult1 = Check_SD_Space();
+	if (fresult1 != FR_OK){
 		sdState = SDSTATE_ERR;
 		defaultSettings();
 		return;
@@ -135,8 +135,8 @@ void openSettingsFromSD(void){
 
 	Uart_SendString("Opening Settings\r\n", pc_uart);
 
-	fresult = File_O_Open(settingsFile);
-	if (fresult != FR_OK){
+	fresult1 = File_O_Open(settingsFile);
+	if (fresult1 != FR_OK){
 		sdState = SDSTATE_ERR;
 		defaultSettings();
 		return;
@@ -146,11 +146,11 @@ void openSettingsFromSD(void){
 
 	TCHAR * result;
 
-	while((result = File_O_Read_Line(buffer))){
-		settingsLineProcessor(buffer, 0, 0);
+	while((result = File_O_Read_Line(buffer2))){
+		settingsLineProcessor(buffer2, 0, 0);
 	}
-	fresult = File_O_Close();
-	if (fresult != FR_OK){
+	fresult1 = File_O_Close();
+	if (fresult1 != FR_OK){
 		sdState = SDSTATE_ERR;
 		defaultSettings();
 		return;
@@ -187,30 +187,30 @@ void saveSettingsToSD(void){
 			Uart_SendString("Saving Settings to SD Card\r\n", pc_uart);
 
 
-			fresult = File_O_Open(settingsFile);
+			fresult1 = File_O_Open(settingsFile);
 
-			if (fresult != FR_OK){
+			if (fresult1 != FR_OK){
 				sdState = SDSTATE_ERR;
 			}
 
 			File_O_Print("#FreeFlightWx Settings\r\n");
-			sprintf(buffer, "MEI=%s\r\n", settings.MEI);
-			File_O_Print(buffer);
-			sprintf(buffer, "SID=%i\r\n", settings.SID);
-			File_O_Print(buffer);
-			sprintf(buffer, "URL=%s\r\n", settings.URL);
-			File_O_Print(buffer);
-			sprintf(buffer, "LOG=%i\r\n", settings.LOG);
-			File_O_Print(buffer);
-			sprintf(buffer, "BCL=%.7f\r\n", settings.BCL);
-			File_O_Print(buffer);
-			sprintf(buffer, "RSH=%i\r\n", settings.RSH);
-			File_O_Print(buffer);
-			sprintf(buffer, "AVN=%i\r\n", settings.AVN);
-			File_O_Print(buffer);
-			fresult = File_O_Close();
+			sprintf(buffer2, "MEI=%s\r\n", settings.MEI);
+			File_O_Print(buffer2);
+			sprintf(buffer2, "SID=%i\r\n", settings.SID);
+			File_O_Print(buffer2);
+			sprintf(buffer2, "URL=%s\r\n", settings.URL);
+			File_O_Print(buffer2);
+			sprintf(buffer2, "LOG=%i\r\n", settings.LOG);
+			File_O_Print(buffer2);
+			sprintf(buffer2, "BCL=%.7f\r\n", settings.BCL);
+			File_O_Print(buffer2);
+			sprintf(buffer2, "RSH=%i\r\n", settings.RSH);
+			File_O_Print(buffer2);
+			sprintf(buffer2, "AVN=%i\r\n", settings.AVN);
+			File_O_Print(buffer2);
+			fresult1 = File_O_Close();
 
-			if (fresult != FR_OK){
+			if (fresult1 != FR_OK){
 				sdState = SDSTATE_ERR;
 			}
 		}
@@ -226,20 +226,20 @@ void printSettings(void){
 	Uart_SendString("Print Settings ...\r\n", pc_uart);
 
 	Uart_SendString("#FreeFlightWx Settings\r\n", pc_uart);
-	sprintf(buffer, "MEI=%s\r\n", settings.MEI);
-	Uart_SendString(buffer, pc_uart);
-	sprintf(buffer, "SID=%i\r\n", settings.SID);
-	Uart_SendString(buffer, pc_uart);
-	sprintf(buffer, "URL=%s\r\n", settings.URL);
-	Uart_SendString(buffer, pc_uart);
-	sprintf(buffer, "LOG=%i\r\n", settings.LOG);
-	Uart_SendString(buffer, pc_uart);
-	sprintf(buffer, "BCL=%.7f\r\n", settings.BCL);
-	Uart_SendString(buffer, pc_uart);
-	sprintf(buffer, "RSH=%i\r\n", settings.RSH);
-	Uart_SendString(buffer, pc_uart);
-	sprintf(buffer, "AVN=%i\r\n", settings.AVN);
-	Uart_SendString(buffer, pc_uart);
+	sprintf(buffer2, "MEI=%s\r\n", settings.MEI);
+	Uart_SendString(buffer2, pc_uart);
+	sprintf(buffer2, "SID=%i\r\n", settings.SID);
+	Uart_SendString(buffer2, pc_uart);
+	sprintf(buffer2, "URL=%s\r\n", settings.URL);
+	Uart_SendString(buffer2, pc_uart);
+	sprintf(buffer2, "LOG=%i\r\n", settings.LOG);
+	Uart_SendString(buffer2, pc_uart);
+	sprintf(buffer2, "BCL=%.7f\r\n", settings.BCL);
+	Uart_SendString(buffer2, pc_uart);
+	sprintf(buffer2, "RSH=%i\r\n", settings.RSH);
+	Uart_SendString(buffer2, pc_uart);
+	sprintf(buffer2, "AVN=%i\r\n", settings.AVN);
+	Uart_SendString(buffer2, pc_uart);
 
 
 }
@@ -329,7 +329,7 @@ void settingsLineProcessor(char * line, uint8_t saveSD, uint8_t saveServer){
 	}
     else if(!strncmp(line, "VLD=", 4)){
 
-    	settingsValid=util_atoi_n(line + 4 ,20);
+    	settingsValid=util_atoi_n(line+ 4 ,20);
 
 	}
 
@@ -434,10 +434,10 @@ void UART_processLines(void)
     if(UART_lineBufferNumLines(&uart_lineBuffer)){//we have a line ready to read
 
 
-    	UART_lineBufferGetLine(&uart_lineBuffer, line);
+    	UART_lineBufferGetLine(&uart_lineBuffer, line1);
 
-       if(line[0] == '$') {
-    	   NMEAProcessor(line);
+       if(line1[0] == '$') {
+    	   NMEAProcessor(line1);
        }
 
 
@@ -501,18 +501,18 @@ void checkWriteLogBuffer(void){
 
 			/**** check whether the dir exists or not ****/
 			FILINFO fno;
-			fresult = f_stat (logdir, &fno);
-			if (fresult != FR_OK){
-				fresult = Create_Dir(logdir);
-				if (fresult != FR_OK){
+			fresult1 = f_stat (logdir, &fno);
+			if (fresult1 != FR_OK){
+				fresult1 = Create_Dir(logdir);
+				if (fresult1 != FR_OK){
 					sdState = SDSTATE_ERR;
 				}
 			}
 	//			t1 = (unsigned int) timer5_ms_get();
 
 			if(currentLogBuffer){//buffering into B, so A must be ready
-				fresult = Update_File (logfile, logBufferA, LOG_BUFFER_SIZE );
-				if (fresult == FR_OK){
+				fresult1 = Update_File (logfile, logBufferA, LOG_BUFFER_SIZE );
+				if (fresult1 == FR_OK){
 					Uart_SendString("Wrote Log Buffer A\r\n", pc_uart);
 //					Uart_SendString("###\r\n", pc_uart);
 //					Uart_SendString(logBufferA, pc_uart);
@@ -527,8 +527,8 @@ void checkWriteLogBuffer(void){
 
 			}
 			else{
-				fresult = Update_File (logfile, logBufferB, LOG_BUFFER_SIZE );
-				if (fresult == FR_OK){
+				fresult1 = Update_File (logfile, logBufferB, LOG_BUFFER_SIZE );
+				if (fresult1 == FR_OK){
 					Uart_SendString("Wrote Log Buffer B\r\n", pc_uart);
 //					Uart_SendString("###\r\n", pc_uart);
 //					Uart_SendString(logBufferB, pc_uart);
@@ -570,18 +570,18 @@ void forceWriteLogBuffer(void){
 
 		/**** check whether the dir exists or not ****/
 		FILINFO fno;
-		fresult = f_stat (logdir, &fno);
-		if (fresult != FR_OK){
-			fresult = Create_Dir(logdir);
-			if (fresult != FR_OK){
+		fresult1 = f_stat (logdir, &fno);
+		if (fresult1 != FR_OK){
+			fresult1 = Create_Dir(logdir);
+			if (fresult1 != FR_OK){
 				sdState = SDSTATE_ERR;
 			}
 		}
 //			t1 = (unsigned int) timer5_ms_get();
 
 		if(currentLogBuffer){//buffering into B, so use that one
-			fresult = Update_File (logfile, logBufferB, logBufferB_position );
-			if (fresult == FR_OK){
+			fresult1 = Update_File (logfile, logBufferB, logBufferB_position );
+			if (fresult1 == FR_OK){
 				Uart_SendString("Flush Log Buffer B\r\n", pc_uart);
 //					Uart_SendString("###\r\n", pc_uart);
 //					Uart_SendString(logBufferA, pc_uart);
@@ -596,8 +596,8 @@ void forceWriteLogBuffer(void){
 
 		}
 		else{
-			fresult = Update_File (logfile, logBufferA, logBufferA_position );
-			if (fresult == FR_OK){
+			fresult1 = Update_File (logfile, logBufferA, logBufferA_position );
+			if (fresult1 == FR_OK){
 				Uart_SendString("Wrote Log Buffer A\r\n", pc_uart);
 //					Uart_SendString("###\r\n", pc_uart);
 //					Uart_SendString(logBufferB, pc_uart);

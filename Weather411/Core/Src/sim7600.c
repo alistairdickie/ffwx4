@@ -64,7 +64,7 @@ uint32_t returnIndex;
 uint8_t errorMonitorFlag;
 
 uint8_t cclkAttempts = 0;
-uint8_t numToSend;
+uint8_t numToSend1;
 uint16_t pause;
 
 uint8_t pauseRDYCount = 0;
@@ -185,7 +185,7 @@ uint8_t sim7600_powerProcessor(void){
 
 		case POWER_OFF:
 			powerOffCount++;
-			sprintf(pbuffer, "SIM7600 Main Power Off %lu \r\n", powerOffCount);
+			sprintf(pbuffer, "SIM7600 Main Power Off %lu \r\n", (long unsigned int)powerOffCount);
 			Uart_SendString(pbuffer, pc_uart);
 			HAL_GPIO_WritePin(GPIO_OUT_4_1EN_GPIO_Port, GPIO_OUT_4_1EN_Pin, GPIO_PIN_RESET);
 			timer5_ms_restart();
@@ -392,7 +392,7 @@ void sim7600_commandProcessor(void){
 
 		case CMD_HTTP_INIT:
 
-			numToSend = numMeasurementsToSend();
+			numToSend1 = numMeasurementsToSend();
 //			if(getUpdateStationListFlag() || sendParamsToUpFlag == 1){
 			if(getUpdateStationListFlag()){
 
@@ -402,7 +402,7 @@ void sim7600_commandProcessor(void){
 				sim7600_command_pause_wait("AT+HTTPINIT\r\n", 1000, "OK", CMD_HTTP_PARA, CMD_ERR,100);
 
 			}
-			else if(numToSend >= 1){
+			else if(numToSend1 >= 1){
 
 				Uart_SendString("Send HTTPINIT for measurements\r\n", pc_uart);
 				timer5_ms_restart();//start http timer
@@ -410,7 +410,7 @@ void sim7600_commandProcessor(void){
 			}
 			else if(timer5_ms_get() > 120000){//we have tried for two minutes, check for sms
 				Uart_SendString("Waiting for a long time in http init - jumping to check for sms. \r\n", pc_uart);
-				sprintf(pbuffer, "Number of Measurements To Send = %u\r\n",numToSend);
+				sprintf(pbuffer, "Number of Measurements To Send = %u\r\n",numToSend1);
 				Uart_SendString(pbuffer, pc_uart);
 				pauseCommmandSate(CMD_CMGR, 1000);
 
@@ -422,7 +422,7 @@ void sim7600_commandProcessor(void){
 
 
 		case CMD_NEXT_MEASUREMENT:
-			sprintf(pbuffer, "Number of Measurements To Send = %u\r\n",numToSend);
+			sprintf(pbuffer, "Number of Measurements To Send = %u\r\n",numToSend1);
 			Uart_SendString(pbuffer, pc_uart);
 			getMeasurementToSend(&measure);
 			measure.csq = csq;
@@ -777,12 +777,14 @@ void processLines(void)
 }
 
 void NMEAProcessor(char * line){
+//	 Uart_SendString("Process line\r\n", pc_uart);
 	if(!strncmp(line, "$FFWX,2", 7)){
 		//$FFWX,2,67,1607845207657
 		//0123456789012345678901234
 		returnIndex = util_atoi_n(line+8, 20);
 	}
 	else if(!strncmp(line, "$FFWX,3", 7)){
+//		Uart_SendString("Process command\r\n", pc_uart);
 		//examples
 		//$FFWX,3,URL=setting
 		//$FFWX,3,SID=setting

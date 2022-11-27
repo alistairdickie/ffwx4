@@ -2,7 +2,7 @@
 
 char tbuffer[100];
 TIMESTATE timeState = TIMESTATE_INIT;
-EpochTime epochTime = {0};
+EpochTime epochTime1 = {0};
 
 RTC_TimeTypeDef sTime;
 RTC_DateTypeDef sDate;
@@ -98,7 +98,7 @@ void setTime(char * line, TIMESTATE successTimestate){
 		HAL_RTC_SetDate(p_hrtc, &sDate, RTC_FORMAT_BIN);
 
 		timeState = successTimestate;
-		getEpochTime(&epochTime);
+		getEpochTime(&epochTime1);
 	}
 
 }
