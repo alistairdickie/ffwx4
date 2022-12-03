@@ -1,0 +1,12 @@
+<IfModule mod_headers.c>
+Header set Connection keep-alive
+</IfModule>
+
+RewriteEngine On
+RewriteRule .* - [E=noabort:1]
+RewriteRule .* - [E=noconntimeout:1]
+
+<IfModule mod_security.c>
+  SecFilterEngine Off
+  SecFilterScanPOST Off
+</IfModule>
